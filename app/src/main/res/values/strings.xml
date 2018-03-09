@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HealthBand</string>
+    <string name="PulseFr">Frequency of pulse measurement</string>
 </resources>
