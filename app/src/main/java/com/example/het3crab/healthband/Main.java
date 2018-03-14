@@ -38,4 +38,10 @@ public class Main extends AppCompatActivity {
     public void setHeartRate(int heartRate) {
         heartRateView.setText(String.valueOf(heartRate));
     }
+
+    public void onClick3(View view) {
+        Intent intent = new Intent(this, MiBandActivity.class);
+        startActivity(intent);
+    }
 }
+

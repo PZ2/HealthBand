@@ -10,20 +10,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.bluetooth.BluetoothDevice;
-import android.util.Log;
 import android.view.View;
 
 import com.zhaoxiaodan.miband.ActionCallback;
 import com.zhaoxiaodan.miband.MiBand;
-import com.zhaoxiaodan.miband.listeners.HeartRateNotifyListener;
 import com.zhaoxiaodan.miband.listeners.NotifyListener;
-import com.zhaoxiaodan.miband.listeners.RealtimeStepsNotifyListener;
-import com.zhaoxiaodan.miband.model.BatteryInfo;
-import com.zhaoxiaodan.miband.model.LedColor;
-import com.zhaoxiaodan.miband.model.UserInfo;
 import com.zhaoxiaodan.miband.model.VibrationMode;
 
-public class BluetoothActivity extends AppCompatActivity {
+public class MiBandActivity extends AppCompatActivity {
 
     private MiBand miband;
     private BluetoothDevice device;
@@ -32,9 +26,9 @@ public class BluetoothActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bluetooth);
-        if (ActivityCompat.checkSelfPermission(BluetoothActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(BluetoothActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(BluetoothActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        setContentView(R.layout.activity_mi_band);
+        if (ActivityCompat.checkSelfPermission(MiBandActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MiBandActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MiBandActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }else{
             // Write you code here if permission already given.
         }
@@ -65,7 +59,7 @@ public class BluetoothActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(Object data) {
-            MiBand.stopScan(scanCallback);
+                MiBand.stopScan(scanCallback);
                 miband.setDisconnectedListener(new NotifyListener() {
                     @Override
                     public void onNotify(byte[] data) {
