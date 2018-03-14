@@ -15,8 +15,9 @@ public class Settings extends AppCompatActivity {
     private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
 
     private boolean isAlertOn = false;
-    private int pulseFreq = 60;
-
+    private int pulseFreqVal = 60;
+    
+    private EditText pulseFreqText;
     private Button saveButton;
     private ToggleButton alerts;
 
@@ -25,6 +26,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        pulseFreqText = findViewById(R.id.pulseFreq)
         alerts = (ToggleButton) findViewById(R.id.alerts);
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -48,15 +50,17 @@ public class Settings extends AppCompatActivity {
                 APP , Context.MODE_PRIVATE);
 
         isAlertOn = prefs.getBoolean(ALERTS_KEY, false);
-        pulseFreq = prefs.getInt(PULSE_FREQ_KEY, 60);
+        pulseFreqVal = prefs.getInt(PULSE_FREQ_KEY, 60);
+        
+        pulseFreqText.setText(String.valueOf(pulseFreqVal));
     }
 
     private void saveSettings() {
         SharedPreferences prefs = this.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
-        prefs.edit().putBoolean(APP, isAlertOn).apply();
-        prefs.edit().putInt(APP, pulseFreq).apply();
+        prefs.edit().putBoolean(ALERTS_KEY, isAlertOn).apply();
+        prefs.edit().putInt(PULSE_FREQ_KEY, pulseFreqVal).apply();
 
         Intent Main = new Intent(this, Main.class);
         startActivity(Main);
@@ -65,6 +69,4 @@ public class Settings extends AppCompatActivity {
     private void alerts() {
 
     }
-
-
 }
