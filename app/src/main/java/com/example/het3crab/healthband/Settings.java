@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ToggleButton;
 
 public class Settings extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        pulseFreqText = findViewById(R.id.pulseFreq)
+        pulseFreqText = findViewById(R.id.pulseFreq);
         alerts = (ToggleButton) findViewById(R.id.alerts);
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +57,9 @@ public class Settings extends AppCompatActivity {
     }
 
     private void saveSettings() {
+        pulseFreqVal = Integer.parseInt(pulseFreqText.getText().toString());
+
+
         SharedPreferences prefs = this.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
