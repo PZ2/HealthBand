@@ -28,6 +28,9 @@ public class Main extends AppCompatActivity {
                 toSettings();
             }
         });
+
+        Notifications not = new Notifications(Main.this);
+        not.notify("TEST TITLE", "MSG TEXT");
     }
 
     public void toSettings() {
