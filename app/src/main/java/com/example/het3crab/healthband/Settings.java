@@ -14,13 +14,16 @@ public class Settings extends AppCompatActivity {
     private final String APP = "com.example.het3crab.healthband";
     private final String ALERTS_KEY = "com.example.het3crab.healthband.alerts";
     private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
+    private final String STEP_KEY = "com.example.het3crab.healthband.stepcount";
 
     private boolean isAlertOn = false;
+    private boolean isStepCountOn = false;
     private int pulseFreqVal = 60;
     
     private EditText pulseFreqText;
     private Button saveButton;
     private ToggleButton alerts;
+    private ToggleButton steps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,47 +33,53 @@ public class Settings extends AppCompatActivity {
         pulseFreqText = findViewById(R.id.pulseFreq);
         alerts = (ToggleButton) findViewById(R.id.alerts);
         saveButton = (Button) findViewById(R.id.saveButton);
+        steps = findViewById(R.id.steps);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveSettings();
             }
         });
-        alerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alerts();
-            }
-        });
 
         readSettings();
+
+        //update settings view
+        pulseFreqText.setText(String.valueOf(pulseFreqVal));
+        alerts.setChecked(isAlertOn);
+        steps.setChecked(isStepCountOn);
     }
 
-    private void readSettings(){
+    public void readSettings(){
         SharedPreferences prefs = this.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
         isAlertOn = prefs.getBoolean(ALERTS_KEY, false);
         pulseFreqVal = prefs.getInt(PULSE_FREQ_KEY, 60);
-        
-        pulseFreqText.setText(String.valueOf(pulseFreqVal));
+        isStepCountOn = prefs.getBoolean(STEP_KEY, false);
     }
 
     private void saveSettings() {
         pulseFreqVal = Integer.parseInt(pulseFreqText.getText().toString());
-
+        isAlertOn = alerts.isChecked();
+        isStepCountOn = steps.isChecked();
 
         SharedPreferences prefs = this.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
         prefs.edit().putBoolean(ALERTS_KEY, isAlertOn).apply();
         prefs.edit().putInt(PULSE_FREQ_KEY, pulseFreqVal).apply();
-
-        Intent Main = new Intent(this, Main.class);
-        startActivity(Main);
+        prefs.edit().putBoolean(STEP_KEY, isStepCountOn).apply();
     }
 
-    private void alerts() {
+    public int getPulseFreqVal(){
+        return pulseFreqVal;
+    }
 
+    public boolean getIsAlertOn(){
+        return isAlertOn;
+    }
+
+    public boolean getIsStepCountOn(){
+        return isStepCountOn;
     }
 }

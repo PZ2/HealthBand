@@ -16,8 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Settings" />
-        <activity android:name=".MiBandActivity"></activity>
+        <activity android:name=".Settings" android:parentActivityName=".Main"/>
+        <activity android:name=".MiBandActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
