@@ -28,7 +28,7 @@ public class MiBandActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mi_band);\
+        setContentView(R.layout.activity_mi_band);
         
         mNotifications = new Notifications(this);
         

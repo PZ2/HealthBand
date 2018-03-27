@@ -1,5 +1,6 @@
 package com.example.het3crab.healthband;
 
+import android.app.NotificationChannel;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ public class Main extends AppCompatActivity {
     private int heartRate = 120;
     private Button toSettingButton;
     private TextView heartRateView;
+    private Notifications mNotifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +31,10 @@ public class Main extends AppCompatActivity {
             }
         });
 
-        Notifications not = new Notifications(Main.this);
-        not.notify("TEST TITLE", "MSG TEXT");
+        mNotifications = new Notifications(this);
+        mNotifications.showNotification("MY NEW TITLE", "MY NEW MESSAGE",
+                                        "com.example.het3crab.healthband.notification",
+                                        MiBandActivity.class);
     }
 
     public void toSettings() {
