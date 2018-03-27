@@ -22,4 +22,41 @@ public class Notifications {
     public void showToast(String msg){
         Toast.makeText(mainContext, msg, Toast.LENGTH_LONG).show();
     }
+    
+    /*
+    	context - activity to open after clicking on notification
+    	action - TAG for receiver
+    */
+    public void showNotification(String title, String msg, String action){
+		// Tapping the Notification will open up MainActivity
+		Intent i = new Intent(this, mainContext);
+		// an action to use later
+		// defined as an app constant:
+		// public static final String MESSAGE_CONSTANT = "com.example.myapp.notification"
+		//i.setAction(MainActivity.MESSAGE_CONSTANT);
+		i.setAction(action);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		
+		PendingIntent notificationIntent = PendingIntent.getActivity(context, 999, i,
+		PendingIntent.FLAG_UPDATE_CURRENT);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(mainContext.getApplicationContext());
+		builder.setContentIntent(notificationIntent);
+		builder.setAutoCancel(true);
+		builder.setLargeIcon(BitmapFactory.decodeResource(mainContext.getResources(),
+															android.R.drawable.ic_menu_view));
+		builder.setSmallIcon(android.R.drawable.ic_dialog_map);
+		builder.setContentText("Test Message Text");
+		builder.setTicker("Test Ticker Text");
+		builder.setContentTitle("Test Message Title");
+		
+		// set high priority for Heads Up Notification
+		builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+		builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+		
+		// It won't show "Heads Up" unless it plays a sound
+		if (Build.VERSION.SDK_INT >= 21) builder.setVibrate(new long[0]);
+		NotificationManager mNotificationManager =
+			(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(999, builder.build());
+	}
 }
