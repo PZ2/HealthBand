@@ -16,8 +16,6 @@ public class Notifications {
     private Context mainContext;
 
     public Notifications(Context context){
-        mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mainContext = context;
     }
 

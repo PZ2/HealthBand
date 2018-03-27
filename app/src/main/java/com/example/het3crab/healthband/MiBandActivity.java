@@ -23,13 +23,15 @@ public class MiBandActivity extends AppCompatActivity {
     private MiBand miband;
     private BluetoothDevice device;
     private ScanCallback scanCallback;
-    private MiBandActivity app;
+    private Notifications mNotifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = this;
-        setContentView(R.layout.activity_mi_band);
+        setContentView(R.layout.activity_mi_band);\
+        
+        mNotifications = new Notifications(this);
+        
         if (ActivityCompat.checkSelfPermission(MiBandActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MiBandActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MiBandActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }else{
@@ -63,12 +65,7 @@ public class MiBandActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Object data) {
                 MiBand.stopScan(scanCallback);
-                app.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(app, "CONNECTED", Toast.LENGTH_LONG).show();
-                    }
-                });
+                mNotifications.showToast("CONNECTED");
                 miband.setDisconnectedListener(new NotifyListener() {
                     @Override
                     public void onNotify(byte[] data) {
