@@ -2,10 +2,14 @@ package com.example.het3crab.healthband;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,12 +22,15 @@ import com.zhaoxiaodan.miband.MiBand;
 import com.zhaoxiaodan.miband.listeners.NotifyListener;
 import com.zhaoxiaodan.miband.model.VibrationMode;
 
-public class MiBandActivity extends AppCompatActivity {
+public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helper.BLEAction {
 
     private MiBand miband;
     private BluetoothDevice device;
     private ScanCallback scanCallback;
     private Notifications mNotifications;
+
+    Handler handler = new Handler(Looper.getMainLooper());
+    BLEMiBand2Helper helper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +47,7 @@ public class MiBandActivity extends AppCompatActivity {
         requestHehe();
 
 //        final BluetoothDevice device = intent.getParcelableExtra("device");
-        scanCallback = new ScanCallback() {
+       /* scanCallback = new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult result) {
                 device = result.getDevice();
@@ -55,32 +62,23 @@ public class MiBandActivity extends AppCompatActivity {
                 }
 
             }
-        };
+        };*/
+
+
 
     }
     void connectToMiBand() {
-        miband = new MiBand(this);
-        miband.connect(device, new ActionCallback() {
 
-            @Override
-            public void onSuccess(Object data) {
-                MiBand.stopScan(scanCallback);
-                mNotifications.showToast("CONNECTED");
-                miband.setDisconnectedListener(new NotifyListener() {
-                    @Override
-                    public void onNotify(byte[] data) {
+        helper = new BLEMiBand2Helper(MiBandActivity.this, handler);
+        helper.addListener(this);
 
-                    }
-                });
-            }
 
-            @Override
-            public void onFail(int errorCode, String msg) {
-                int bbb=15;
-            }
-        });
+        // Setup Bluetooth:
+        helper.connect();
 
     }
+
+
 
     void requestHehe(){
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -96,12 +94,13 @@ public class MiBandActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        MiBand.startScan(scanCallback);
+        connectToMiBand();
 
     }
 
     public void onClick2(View view) {
-        miband.startVibration(VibrationMode.VIBRATION_WITH_LED);
+        helper.sendSms("sd");
+
 //        miband.getBatteryInfo(new ActionCallback() {
 //
 //            @Override
@@ -115,5 +114,30 @@ public class MiBandActivity extends AppCompatActivity {
 //                Log.d("Elo", "getBatteryInfo fail");
 //            }
 //        });
+    }
+
+    @Override
+    public void onDisconnect() {
+
+    }
+
+    @Override
+    public void onConnect() {
+
+    }
+
+    @Override
+    public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+    }
+
+    @Override
+    public void onWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+    }
+
+    @Override
+    public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+
     }
 }
