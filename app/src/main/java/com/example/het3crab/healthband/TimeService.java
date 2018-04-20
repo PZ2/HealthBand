@@ -1,4 +1,4 @@
-package com.example.student.myapplication;
+package com.example.het3crab.healthband;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 public class TimeService extends Service {
     // constant
-    public static final long NOTIFY_INTERVAL = 10 * 1000; // 10 seconds
+    public static final long NOTIFY_INTERVAL = 30 * 1000; // 10 seconds
 
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
@@ -30,7 +30,7 @@ public class TimeService extends Service {
 
     @Override
     public void onCreate() {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, Main.class);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);

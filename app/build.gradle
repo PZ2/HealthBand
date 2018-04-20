@@ -5,8 +5,8 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.het3crab.healthband"
-        minSdkVersion 23
-        targetSdkVersion 26
+        minSdkVersion 25
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

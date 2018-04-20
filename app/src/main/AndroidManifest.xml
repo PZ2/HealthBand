@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".Settings" android:parentActivityName=".Main"/>
         <activity android:name=".MiBandActivity"/>
+        <service android:name=".TimeService"/>
     </application>
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
