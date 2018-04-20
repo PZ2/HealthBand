@@ -37,6 +37,8 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+	startService(new Intent(this, TimeService.class));
+
         heartRateView = (TextView) findViewById(R.id.heartRate);
         toSettingButton = (Button) findViewById(R.id.toSettingButton);
 
