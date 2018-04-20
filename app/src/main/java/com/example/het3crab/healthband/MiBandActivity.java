@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.bluetooth.BluetoothDevice;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ import com.zhaoxiaodan.miband.ActionCallback;
 import com.zhaoxiaodan.miband.MiBand;
 import com.zhaoxiaodan.miband.listeners.NotifyListener;
 import com.zhaoxiaodan.miband.model.VibrationMode;
+
+import java.util.UUID;
 
 public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helper.BLEAction {
 
@@ -99,8 +102,13 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
     }
 
     public void onClick2(View view) {
-        helper.sendSms("sd");
-
+        //helper.sendSms("sd");
+      // helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 1, 1} );
+        //helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_SENSOR_CHARACTERISTIC, new byte[]{1, 3, 25} );
+        //helper.readData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT);
+        helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
+        //helper.readData(Consts.UUID_SERVICE_MIBAND_SERVICE, Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS);
+        //helper.startScanHeartRate();
 //        miband.getBatteryInfo(new ActionCallback() {
 //
 //            @Override
@@ -128,7 +136,6 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
 
     @Override
     public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
     }
 
     @Override
@@ -138,6 +145,7 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
 
     @Override
     public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-
+        UUID alertUUID = characteristic.getUuid();
+        Log.v("Test", alertUUID.toString());
     }
 }

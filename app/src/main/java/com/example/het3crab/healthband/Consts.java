@@ -25,7 +25,7 @@ public class Consts {//this is common for all BTLE devices. see http://stackover
     public static final UUID UUID_CHARACTERISTIC_DEVICE_NAME = UUID.fromString(String.format(BASE_UUID, "2A00"));
 
     public static final UUID UUID_UNKNOWN_CHARACTERISTIC0 = UUID.fromString("00000000-0000-3512-2118-0009af100700");
-    public static final UUID UUID_UNKNOWN_CHARACTERISTIC1 = UUID.fromString("00000001-0000-3512-2118-0009af100700");
+    public static final UUID UUID_SENSOR_CHARACTERISTIC = UUID.fromString("00000001-0000-3512-2118-0009af100700");
     public static final UUID UUID_UNKNOWN_CHARACTERISTIC2 = UUID.fromString("00000002-0000-3512-2118-0009af100700");
     /**
      * Alarms, Display and other configuration.
@@ -46,6 +46,7 @@ public class Consts {//this is common for all BTLE devices. see http://stackover
     public static final byte[] BYTE_LAST_HEART_RATE_SCAN = {21, 1, 1};
     public static final byte[] BYTE_NEW_HEART_RATE_SCAN = {21, 2, 1};
     public static final UUID UUID_DESCRIPTOR_UPDATE_NOTIFICATION = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static final UUID UUID_HEART_RATE_SERVICE= UUID.fromString("0000180d-0000-1000-8000-00805f9b34fb");
     //Actions
     public static final Byte mensaje=5;
     public static final Byte llamada=3;

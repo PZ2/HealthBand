@@ -322,7 +322,7 @@ public class BLEMiBand2Helper {
                     = myGatService.getCharacteristic(Characteristics /*Consts.UUID_CHARACTERISTIC_DEVICE_NAME*/);
             if (myGatChar != null) {
                 Log.d(TAG, "* Reading data");
-
+                int a= myGatChar.getProperties();
                 boolean status = myGatBand.readCharacteristic(myGatChar);
                 Log.d(TAG, "* Read status :" + status);
             }
@@ -351,6 +351,16 @@ public class BLEMiBand2Helper {
                 Log.d(TAG, "* Writting trigger status :" + status);
             }
         }
+    }
+
+    public void startScanHeartRate(){
+        if (!isConnectedToGatt || myGatBand == null) {
+            Log.d(TAG, "Cant read from BLE, not initialized.");
+            return;
+        }
+        BluetoothGattCharacteristic bchar = myGatBand.getService(Consts.UUID_HEART_RATE_SERVICE).getCharacteristic(Consts.UUID_START_HEARTRATE_CONTROL_POINT);
+        bchar.setValue(new byte[]{21, 2, 1});
+        myGatBand.writeCharacteristic(bchar);
     }
 
     /**
@@ -413,7 +423,7 @@ public class BLEMiBand2Helper {
                         = myGatChar.getDescriptor(Descriptor/*Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION*/);
                 if (myDescriptor != null) {
                     Log.d(TAG, "Writing decriptor: " + Descriptor.toString());
-                    myDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                    myDescriptor.setValue(new byte[]{1,0});
                     status = myGatBand.writeDescriptor(myDescriptor);
                     Log.d(TAG, "Writing decriptors result: " + status);
                 }
