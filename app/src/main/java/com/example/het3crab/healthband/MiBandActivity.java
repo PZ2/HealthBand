@@ -23,6 +23,7 @@ import com.zhaoxiaodan.miband.MiBand;
 import com.zhaoxiaodan.miband.listeners.NotifyListener;
 import com.zhaoxiaodan.miband.model.VibrationMode;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helper.BLEAction {
@@ -96,12 +97,12 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
         }
     }
 
-    public void onClick(View view) {
+    public void laczenie(View view) {
         connectToMiBand();
 
     }
 
-    public void onClick2(View view) {
+    public void nasluchuj(View view) {
         //helper.sendSms("sd");
       // helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 1, 1} );
         //helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_SENSOR_CHARACTERISTIC, new byte[]{1, 3, 25} );
@@ -122,6 +123,10 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
 //                Log.d("Elo", "getBatteryInfo fail");
 //            }
 //        });
+    }
+
+    public void odczytPulsu(View view){
+        helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 1, 1} );
     }
 
     @Override
@@ -146,6 +151,6 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
     @Override
     public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         UUID alertUUID = characteristic.getUuid();
-        Log.v("Test", alertUUID.toString());
+        Log.d("odczyt", " - odczyt: " + Arrays.toString(characteristic.getValue()));
     }
 }

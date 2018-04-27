@@ -105,6 +105,7 @@ public class Main extends AppCompatActivity {
 
         graph.getViewport().setScrollable(true); // enables horizontal scrolling
         graph.getViewport().setScrollableY(true); // enables vertical scrolling
+        graph.getViewport().setScalable(true);
 
         graph.addSeries(series);
 

@@ -69,7 +69,7 @@ public class BLEMiBand2Helper {
         final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         try {
 
-            activeDevice = mBluetoothAdapter.getRemoteDevice("DD:B0:AF:B3:09:42");
+            activeDevice = mBluetoothAdapter.getRemoteDevice("D9:E3:90:3D:6F:93");
         } catch (Exception e) {
             activeDevice = null;
             e.printStackTrace();

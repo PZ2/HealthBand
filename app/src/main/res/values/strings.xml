@@ -3,4 +3,7 @@
     <string name="PulseFr">Frequency of pulse measurement</string>
     <string name="channel_description">HealthBandNotifications</string>
     <string name="channel_name">HealthBandNotifications</string>
+    <string name="polacz_button">Połącz</string>
+    <string name="odczytPulsuString">Odczytaj Puls</string>
+    <string name="NasluchujString">Nasłuchuj</string>
 </resources>
