@@ -3,7 +3,9 @@ package com.example.het3crab.healthband;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,8 +17,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimeService extends Service {
-    // constant
-    public static final long NOTIFY_INTERVAL = 30 * 1000; // 10 seconds
+    private final String APP = "com.example.het3crab.healthband";
+    private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
+    int pulseFreq;
 
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
@@ -43,6 +46,8 @@ public class TimeService extends Service {
 
         startForeground(1337, notification);
 
+        pulseFreqUpdate();
+
         // cancel if already existed
         if (mTimer != null) {
             mTimer.cancel();
@@ -51,7 +56,23 @@ public class TimeService extends Service {
             mTimer = new Timer();
         }
         // schedule task
-        mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, NOTIFY_INTERVAL);
+        mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, pulseFreq * 1000);
+    }
+
+    public void pulseFreqUpdate(){
+        SharedPreferences prefs = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
+        pulseFreq = prefs.getInt(PULSE_FREQ_KEY, 60);
+    }
+
+    public void ifFreqChange(){
+        SharedPreferences prefs = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
+        if (prefs.getInt(PULSE_FREQ_KEY, 60) != pulseFreq) {
+            mTimer.cancel();
+            mTimer = new Timer();
+            pulseFreq = prefs.getInt(PULSE_FREQ_KEY, 60);
+            mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, pulseFreq * 1000);
+        }
+
     }
 
     class TimeDisplayTimerTask extends TimerTask {
@@ -64,6 +85,7 @@ public class TimeService extends Service {
                 @Override
                 public void run() {
                     // display toast
+                    ifFreqChange();
                     Toast.makeText(getApplicationContext(), getDateTime(),
                             Toast.LENGTH_SHORT).show();
                 }

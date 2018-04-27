@@ -56,13 +56,13 @@ public class Main extends AppCompatActivity {
                                         "com.example.het3crab.healthband.notification",
                                         MiBandActivity.class);
 
-        for(int x = 0; x <= 20; x++){
-            RealmPulseReading pulse = new RealmPulseReading();
-            pulse.setDate(x);
-            pulse.setValue((int)(Math.random()*200 + 40));
-
-            pulsesToAdd.add(pulse);
-        }
+        //for(int x = 0; x <= 20; x++){
+          //  RealmPulseReading pulse = new RealmPulseReading();
+          //  pulse.setDate(x);
+         //   pulse.setValue((int)(Math.random()*200 + 40));
+//
+        //    pulsesToAdd.add(pulse);
+        //}
 
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();

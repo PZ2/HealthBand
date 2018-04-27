@@ -8,6 +8,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,9 @@ import com.zhaoxiaodan.miband.model.VibrationMode;
 
 import java.util.Arrays;
 import java.util.UUID;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helper.BLEAction {
 
@@ -152,5 +156,23 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
     public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         UUID alertUUID = characteristic.getUuid();
         Log.d("odczyt", " - odczyt: " + Arrays.toString(characteristic.getValue()));
+
+        final RealmPulseReading pulse = new RealmPulseReading();
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date now = calendar.getTime();
+        long x = now.getTime();
+        pulse.setDate(x);
+        pulse.setValue((int)(characteristic.getValue()[1]));
+
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                    realm.insertOrUpdate(pulse);
+            }
+        });
     }
 }
