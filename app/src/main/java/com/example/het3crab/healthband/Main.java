@@ -1,7 +1,10 @@
 package com.example.het3crab.healthband;
 
 import android.app.NotificationChannel;
+import android.content.Context;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,11 +13,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -87,7 +92,7 @@ public class Main extends AppCompatActivity {
         DataPoint[] dataPoints = new DataPoint[pulses.size()];
         int x = 0;
         for(RealmPulseReading pulse : pulses){
-            DataPoint dataPoint = new DataPoint((double)pulse.getDate(), (double)pulse.getValue());
+            DataPoint dataPoint = new DataPoint(getDate(pulse.getDate(), "dd/MM hh:mm:ss"), (double)pulse.getValue());
             dataPoints[x] = dataPoint;
             x++;
         }
@@ -96,6 +101,7 @@ public class Main extends AppCompatActivity {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
 
         graph.getViewport().setYAxisBoundsManual(true);
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(30);
 
@@ -125,5 +131,16 @@ public class Main extends AppCompatActivity {
         Intent intent = new Intent(this, MiBandActivity.class);
         startActivity(intent);
     }
+
+    public static Date getDate(long milliSeconds, String dateFormat) {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return calendar.getTime();
+    }
+
 }
 
