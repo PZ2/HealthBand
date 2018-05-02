@@ -32,9 +32,6 @@ import io.realm.RealmConfiguration;
 
 public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helper.BLEAction {
 
-    private MiBand miband;
-    private BluetoothDevice device;
-    private ScanCallback scanCallback;
     private Notifications mNotifications;
 
     Handler handler = new Handler(Looper.getMainLooper());

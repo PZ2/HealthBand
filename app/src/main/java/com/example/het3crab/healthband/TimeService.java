@@ -3,28 +3,44 @@ package com.example.het3crab.healthband;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
-public class TimeService extends Service {
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
+public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
     private final String APP = "com.example.het3crab.healthband";
     private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
     int pulseFreq;
+    boolean connect=false;
 
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
     // timer handling
     private Timer mTimer = null;
+
+    Handler handler = new Handler(Looper.getMainLooper());
+    BLEMiBand2Helper helper = null;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -33,6 +49,8 @@ public class TimeService extends Service {
 
     @Override
     public void onCreate() {
+        connectToMiBand();
+
         Intent notificationIntent = new Intent(this, Main.class);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
@@ -75,6 +93,51 @@ public class TimeService extends Service {
 
     }
 
+    @Override
+    public void onDisconnect() {
+        connect = false;
+
+    }
+
+    @Override
+    public void onConnect() {
+        connect = true;
+    }
+
+    @Override
+    public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+    }
+
+    @Override
+    public void onWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+    }
+
+    @Override
+    public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        UUID alertUUID = characteristic.getUuid();
+        Log.d("odczyt", " - odczyt: " + Arrays.toString(characteristic.getValue()));
+
+        final RealmPulseReading pulse = new RealmPulseReading();
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date now = calendar.getTime();
+        long x = now.getTime();
+        pulse.setDate(x);
+        pulse.setValue((int)(characteristic.getValue()[1]));
+
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insertOrUpdate(pulse);
+            }
+        });
+    }
+
     class TimeDisplayTimerTask extends TimerTask {
 
         @Override
@@ -86,8 +149,24 @@ public class TimeService extends Service {
                 public void run() {
                     // display toast
                     ifFreqChange();
-                    Toast.makeText(getApplicationContext(), getDateTime(),
-                            Toast.LENGTH_SHORT).show();
+                    if (connect)
+                    {
+
+                        helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
+                        try {
+                         Thread.sleep(900);
+                     } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                      }
+                     odczytPulsu();
+                        Toast.makeText(getApplicationContext(), getDateTime(),
+                             Toast.LENGTH_SHORT).show();
+                }
+                else {
+                        requestHehe();
+                        connectToMiBand();
+                    }
                 }
 
             });
@@ -99,5 +178,28 @@ public class TimeService extends Service {
             return sdf.format(new Date());
         }
 
+    }
+
+    void connectToMiBand() {
+        if (helper == null) {
+            helper = new BLEMiBand2Helper(TimeService.this, handler);
+            helper.addListener(this);
+        }
+
+
+        // Setup Bluetooth:
+        helper.connect();
+
+    }
+
+    public void odczytPulsu(){
+        helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 2, 1} );
+    }
+
+    void requestHehe(){
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device doesn't support Bluetooth
+        }
     }
 }
