@@ -130,7 +130,7 @@ public class MiBandActivity extends AppCompatActivity implements BLEMiBand2Helpe
     }
 
     public void odczytPulsu(View view){
-        helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 1, 1} );
+        helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 2, 1} );
     }
 
     @Override

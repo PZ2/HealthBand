@@ -92,7 +92,7 @@ public class Main extends AppCompatActivity {
         DataPoint[] dataPoints = new DataPoint[pulses.size()];
         int x = 0;
         for(RealmPulseReading pulse : pulses){
-            DataPoint dataPoint = new DataPoint(getDate(pulse.getDate(), "dd/MM hh:mm:ss"), (double)pulse.getValue());
+            DataPoint dataPoint = new DataPoint(getDate(pulse.getDate()), (double)pulse.getValue());
             dataPoints[x] = dataPoint;
             x++;
         }
@@ -102,6 +102,7 @@ public class Main extends AppCompatActivity {
 
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(2);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(30);
 
@@ -132,10 +133,8 @@ public class Main extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public static Date getDate(long milliSeconds, String dateFormat) {
-        // Create a DateFormatter object for displaying date in specified format.
-        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
+        public static Date getDate(long milliSeconds) {
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
