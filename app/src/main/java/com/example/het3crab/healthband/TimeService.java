@@ -154,7 +154,7 @@ public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
 
                         helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
                         try {
-                         Thread.sleep(900);
+                         Thread.sleep(1000);
                      } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
