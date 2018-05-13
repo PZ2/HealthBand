@@ -15,24 +15,34 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
     private final String APP = "com.example.het3crab.healthband";
     private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
     int pulseFreq;
+    int average;
     boolean connect=false;
+    private SmsManager smsManager = SmsManager.getDefault();
+
+
+    public RealmResults<RealmPulseReading> pulses2;
+    public List<RealmPulseReading> pulses2ToAdd = new ArrayList<>();
 
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
@@ -136,7 +146,44 @@ public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
                 realm.insertOrUpdate(pulse);
             }
         });
+        lifeCheck();
     }
+
+    public void sendSms()
+    {
+        smsManager.sendTextMessage("694759594", null, "elo", null, null);
+    }
+
+    void lifeCheck() {
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (RealmPulseReading pulse : pulses2ToAdd) {
+                    realm.insertOrUpdate(pulse);
+                }
+            }
+        });
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                pulses2 = realm.where(RealmPulseReading.class).findAll();
+                if (pulses2.size() > 2) {
+                    average = (pulses2.get(pulses2.size() - 1).getValue() + pulses2.get(pulses2.size() - 2).getValue() + pulses2.get(pulses2.size() - 3).getValue()) / 3;
+                    Log.d("siema", String.valueOf(average));
+                    if (average > 150 || average < 60) {
+                        sendSms();
+                    }
+
+                }
+            }
+        });
+    }
+
 
     class TimeDisplayTimerTask extends TimerTask {
 
@@ -154,16 +201,16 @@ public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
 
                         helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
                         try {
-                         Thread.sleep(1000);
-                     } catch (InterruptedException e) {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
-                      }
-                     odczytPulsu();
+                        }
+                        odczytPulsu();
                         Toast.makeText(getApplicationContext(), getDateTime(),
-                             Toast.LENGTH_SHORT).show();
-                }
-                else {
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else {
                         requestHehe();
                         connectToMiBand();
                     }

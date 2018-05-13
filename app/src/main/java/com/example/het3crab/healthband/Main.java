@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class Main extends AppCompatActivity {
     private Button toSettingButton;
     private TextView heartRateView;
     private Notifications mNotifications;
+    private SmsManager smsManager = SmsManager.getDefault();
 
     public RealmResults<RealmPulseReading> pulses;
     public List<RealmPulseReading> pulsesToAdd = new ArrayList<>();
@@ -47,7 +49,7 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-	startService(new Intent(this, TimeService.class));
+        startService(new Intent(this, TimeService.class));
 
         heartRateView = (TextView) findViewById(R.id.heartRate);
         toSettingButton = (Button) findViewById(R.id.toSettingButton);
@@ -63,10 +65,10 @@ public class Main extends AppCompatActivity {
 
         mNotifications = new Notifications(this);
         mNotifications.showNotification("MY NEW TITLE", "MY NEW MESSAGE",
-                                        "com.example.het3crab.healthband.notification",
-                                        MiBandActivity.class);
+                "com.example.het3crab.healthband.notification",
+                MiBandActivity.class);
 
-        createGraph();
+
 
         Timer myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
@@ -78,6 +80,7 @@ public class Main extends AppCompatActivity {
             });}
         }, 0, 15000);
     }
+
 
     public void toSettings() {
         Intent Settings = new Intent(this, Settings.class);
@@ -94,7 +97,7 @@ public class Main extends AppCompatActivity {
     }
 
 
-        public static Date getDate(long milliSeconds) {
+    public static Date getDate(long milliSeconds) {
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
